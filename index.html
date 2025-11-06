@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>One‑Punch Effort Calculator — Neon</title>
+  <style>
+    :root{--bg:#05070c;--card:#0a0f1a;--muted:#0e1424;--text:#e8f0ff;--sub:#95a5c6;--accent:#7c3aed;--accent2:#00e5ff;--ring:#243147;--ok:#22d3ee;--warn:#fbbf24;--bad:#fb7185;--good:#34d399}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,#101a35 0,transparent 60%),radial-gradient(1000px 800px at -10% 10%,#091126 0,transparent 65%),var(--bg);color:var(--text);font:15.5px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial;transition:background .25s ease}
+    body.savage{background:radial-gradient(1000px 600px at 80% -10%,rgba(255,64,64,.18) 0,transparent 60%),radial-gradient(1000px 800px at -10% 10%,rgba(124,58,237,.25) 0,transparent 65%),var(--bg)}
+    body.light{background:radial-gradient(1000px 600px at 20% -10%,#fff 0,transparent 60%),radial-gradient(1000px 800px at 120% 10%,#eaf1ff 0,transparent 65%),#f6f8ff}
+    body.light{--bg:#f6f8ff;--card:#fff;--muted:#eef2ff;--text:#0f172a;--sub:#475569;--ring:#c7d2fe}
+    body.light th{background:#eef2ff;color:#0f172a}
+    body.light tr:hover td{background:#f3f6ff}
+    body.light .note{color:#6d28d9;border-color:#c7d2fe;background:#f8f9ff}
+    body.light .badge{color:#0f172a}
+    body.light .card{background:linear-gradient(180deg,var(--card),#f8faff)}
+    .container{max-width:1200px;margin:34px auto;padding:0 18px}
+    .title{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(180deg,#10172a,#060a14);border:1px solid var(--ring);padding:8px 12px;border-radius:14px;color:#cfe3ff;box-shadow:0 0 10px rgba(124,58,237,.35),inset 0 0 12px rgba(0,229,255,.12)}
+    .neon{background:linear-gradient(90deg,rgba(124,58,237,.45),rgba(0,229,255,.45));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 18px rgba(124,58,237,.35);transition:all .2s ease}
+    body.savage .neon{text-shadow:0 0 22px rgba(239,68,68,.55),0 0 30px rgba(124,58,237,.45)}
+    .grid{display:grid;gap:16px;grid-template-columns:repeat(12,1fr)}
+    .card{grid-column:span 12;background:linear-gradient(180deg,var(--card),#060b16);border:1px solid var(--ring);border-radius:16px;padding:16px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+    @media (min-width:980px){.span6{grid-column:span 6}.span4{grid-column:span 4}.span8{grid-column:span 8}}
+    h1{font-size:26px;margin:6px 0 2px}
+    h2{font-size:16px;margin:0 0 10px;color:#d6e4ff;letter-spacing:.2px}
+    body.light h2{color:#0f172a}
+    p{margin:0 0 8px;color:var(--sub)}
+    .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .chip{border:1px solid var(--ring);background:linear-gradient(180deg,#0d1424,#08111f);color:#d1e3ff;padding:8px 10px;border-radius:12px;cursor:pointer;user-select:none;box-shadow:0 0 8px rgba(0,229,255,.12)}
+    body.light .chip{background:linear-gradient(180deg,#f6f8ff,#eef2ff);color:#0f172a}
+    .chip[data-active="true"]{background:linear-gradient(180deg,#192444,#0b1220);border-color:#6d28d9;box-shadow:0 0 0 2px rgba(59,130,246,.25) inset,0 0 14px rgba(124,58,237,.35)}
+    body.light .chip[data-active="true"]{background:linear-gradient(180deg,#dbeafe,#eef2ff)}
+    .lbl{color:#d6e4ff;font-size:13px}
+    body.light .lbl{color:#0f172a}
+    .num{min-width:64px}
+    .input,select{background:#060b16;color:#e5edff;border:1px solid var(--ring);border-radius:10px;padding:8px 10px;outline:none}
+    body.light .input,body.light select{background:#fff;color:#0f172a}
+    .input:focus,select:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.25)}
+    .btn{background:linear-gradient(90deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:12px;padding:10px 14px;cursor:pointer;box-shadow:0 6px 22px rgba(124,58,237,.35)}
+    .btn.ghost{background:transparent;border:1px solid var(--ring);color:#d6e4ff;box-shadow:none}
+    body.light .btn.ghost{color:#0f172a}
+    .btn.warn{background:linear-gradient(90deg,#f59e0b,#ef4444)}
+    .btn:active{transform:translateY(1px)}
+    .kpi{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+    .kpi .pill{background:#060b16;border:1px solid var(--ring);border-radius:14px;padding:8px 12px}
+    body.light .kpi .pill{background:#fff}
+    .kpi .big{font-size:28px;font-weight:700;letter-spacing:.3px}
+    .muted{color:#9fb3d8}
+    body.light .muted{color:#64748b}
+    .divider{height:1px;background:#1b2740;margin:10px 0}
+    body.light .divider{background:#e2e8f0}
+    .hint{font-size:12px;color:#9fb3d8}
+    body.light .hint{color:#64748b}
+    .footer{margin-top:10px;font-size:12px;color:#7a8fb7}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+    .section{margin-top:8px}
+    .counter{display:flex;align-items:center;gap:8px}
+    .counter input{width:64px;text-align:center}
+    .tag{font-size:12px;background:#060b16;border:1px solid #2a3652;padding:6px 10px;border-radius:999px;color:#d6e4ff;cursor:pointer}
+    body.light .tag{background:#fff;color:#0f172a}
+    .good{color:var(--good)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+    .note{padding:8px 10px;background:#060b16;border:1px dashed #334155;border-radius:10px;color:#a78bfa}
+    body.savage .note{color:#fca5a5;border-color:#dc2626}
+    .link{color:#93c5fd;text-decoration:underline;cursor:pointer}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid #172039;padding:8px 10px;text-align:left}
+    th{color:#cbdafe;font-weight:600;background:#0b1224}
+    tr:hover td{background:#0b1224}
+    body.light th{color:#0f172a}
+    body.light tr:hover td{background:#eef2ff}
+    .rm{cursor:pointer;opacity:.8}
+    .badge-wrap{display:flex;align-items:center;gap:10px}
+    .saitama{width:42px;height:42px;filter:drop-shadow(0 0 8px rgba(0,229,255,.6))}
+    .stamp{font-weight:800;letter-spacing:.5px}
+    .bar{height:12px;background:#0b1220;border:1px solid #233151;border-radius:999px;overflow:hidden}
+    .bar>span{display:block;height:100%;background:linear-gradient(90deg,#00e5ff,#7c3aed)}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+    .modal.show{display:flex}
+    .modal .panel{width:min(980px,100%);background:linear-gradient(180deg,var(--card),#060b16);border:1px solid var(--ring);border-radius:16px;padding:16px;box-shadow:0 8px 30px rgba(0,0,0,.45)}
+    .modal textarea{width:100%;min-height:360px;background:#060b16;color:#e5edff;border:1px solid var(--ring);border-radius:12px;padding:12px;font:12.5px/1.45 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+    body.light .modal textarea{background:#fff;color:#0f172a}
+    .row.gap{gap:12px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">
+      <span class="badge">🧮 One‑Punch Effort Calculator</span>
+      <button class="tag" id="toggleTheme" title="Toggle Dark/Light">Neon Mode: Dark</button>
+      <button class="btn ghost" id="toggleSavage">🗡️ Savage Mode: Off</button>
+      <button class="btn" id="configBtn">🛠️ Config</button>
+    </div>
+    <h1 id="mainTitle" class="neon">Satu Sprint, Seribu Drama</h1>
+    <p id="subCopy" class="muted">Hai kalian developer developer lemah klo pas ngitung effort — santai, kalkulator ini jadi sparring partner kalian. Hitung effort per task, masukin ke daftar sprint, terus cek kapasitas: kalau pas, <b>Saitama Approved™</b>; kalau jebol, ya… <i>Genos Overheat</i>.</p>
+    <div class="grid section">
+      <div class="card span6">
+        <h2>1) Complexity (pilih satu)</h2>
+        <div id="complexity" class="row"></div>
+        <p class="hint">Heuristik: checklist udah bikin ragu? Minimal Harimau, bro 🐯</p>
+        <div id="cxHint" class="note mono" style="white-space:pre-wrap; margin-top:8px">Pilih tingkat kompleksitas untuk melihat detail & contoh.
+—
+Serigala: bug/minor change • Harimau: CRUD kecil • Iblis: multi module • Naga: cross‑service/payment • Dewa: misi planet Namek.</div>
+        <div class="divider"></div>
+        <h2>2) API</h2>
+        <div class="row">
+          <div class="counter"><label class="lbl">GET</label><input id="apiGet" type="number" class="input num" min="0" value="0"></div>
+          <div class="counter"><label class="lbl">Mutate (POST/PUT/..)</label><input id="apiMutate" type="number" class="input num" min="0" value="0"></div>
+          <div class="counter"><label class="lbl">Complex (pagination/filter/idempotency)</label><input id="apiComplex" type="number" class="input num" min="0" value="0"></div>
+        </div>
+        <div class="divider"></div>
+        <h2>3) Database & CRUD</h2>
+        <div class="row">
+          <div class="counter"><label class="lbl">New table + migration</label><input id="dbNew" type="number" class="input num" min="0" value="0"></div>
+          <div class="counter"><label class="lbl">Alter + backfill</label><input id="dbAlter" type="number" class="input num" min="0" value="0"></div>
+          <div class="counter"><label class="lbl">CRUD logic sederhana</label><input id="crudSimple" type="number" class="input num" min="0" value="0"></div>
+        </div>
+        <div class="divider"></div>
+        <h2>4) Redis, Type & API Integrations</h2>
+        <div class="row">
+          <label class="lbl">Redis</label>
+          <select id="redis">
+            <option value="none">None</option>
+            <option value="simple">Simple cache</option>
+            <option value="invalidation">Cache invalidation</option>
+            <option value="lock">Distributed lock / rate limit</option>
+          </select>
+          <label class="lbl">Type Integration</label>
+          <select id="typeInteg">
+            <option value="none">None</option>
+            <option value="internal">Internal module/types</option>
+            <option value="cross">Cross-service schema</option>
+            <option value="compat">Versioning + compat</option>
+          </select>
+          <label class="lbl">API Integration</label>
+          <select id="apiInteg">
+            <option value="none">None</option>
+            <option value="internal">Internal microservice</option>
+            <option value="oauth">3rd-party OAuth/Webhook</option>
+            <option value="payment">Payment/Wallet/Secure</option>
+            <option value="iso8583">ISO8583 / Banking H2H</option>
+          </select>
+        </div>
+      </div>
+      <div class="card span6">
+        <h2>5) Quality, Observability, NFR</h2>
+        <div class="row">
+          <div class="counter"><label class="lbl">Unit tests (per 100 LOC)</label><input id="unitTests" type="number" class="input num" min="0" value="0"></div>
+          <div class="counter"><label class="lbl">Integration tests</label><input id="integTests" type="number" class="input num" min="0" value="0"></div>
+          <div class="counter"><label class="lbl">Contract tests</label><input id="contractTests" type="number" class="input num" min="0" value="0"></div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <label class="lbl">Observability</label>
+          <label><input id="logging" type="checkbox"> Logging</label>
+          <label><input id="metrics" type="checkbox"> Metrics</label>
+          <label><input id="tracing" type="checkbox"> Tracing</label>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <label class="lbl">Non‑Functional</label>
+          <label><input id="perf" type="checkbox"> Performance target</label>
+          <label><input id="security" type="checkbox"> Security hardening</label>
+          <label><input id="compliance" type="checkbox"> Compliance</label>
+        </div>
+        <div class="divider"></div>
+        <h2>6) Risk, Environment, Crew</h2>
+        <div class="row">
+          <div class="counter"><label class="lbl">Risk flags (0..n)</label><input id="riskFlags" type="number" class="input num" min="0" value="0"></div>
+          <label class="lbl">Environment</label>
+          <select id="environment">
+            <option value="dev">Dev</option>
+            <option value="stg">Staging</option>
+            <option value="prod">Production</option>
+          </select>
+          <label class="lbl">Seniority (Hero Rank)</label>
+          <select id="seniority">
+            <option value="S">S</option>
+            <option value="SS" selected>SS</option>
+            <option value="SSS">SSS</option>
+          </select>
+          <label class="lbl">Fight Class</label>
+          <select id="fightClass">
+            <option value="prof">Prof</option>
+            <option value="amatir" selected>Amatir</option>
+            <option value="newbie">Newbie</option>
+            <option value="bulu">Bulu Ringan</option>
+          </select>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+          <input id="taskName" class="input" placeholder="Nama task (misal: CRUD Menu + thumbnail)" style="min-width:260px">
+          <button class="btn" id="addTask">➕ Add to Sprint</button>
+          <button class="btn ghost" id="presetCrud">⚙️ Preset CRUD</button>
+          <button class="btn ghost" id="presetISO">🏦 Preset ISO8583</button>
+          <button class="btn ghost" id="presetWallet">🎟️ Preset Wallet</button>
+          <button class="btn ghost" id="loadSamples">🍗 Load Food‑Order Samples</button>
+          <button class="btn warn" id="resetBtn">♻️ Reset</button>
+        </div>
+        <p class="hint" style="margin-top:8px">Preset = contoh yang sering kita garap. Bebas custom lagi.</p>
+      </div>
+      <div class="card span8">
+        <h2>Hasil Perhitungan</h2>
+        <div class="kpi">
+          <div class="pill"><div class="muted">Effort Score</div><div id="score" class="big">0</div></div>
+          <div class="pill"><div class="muted">Est. Hari Fokus</div><div id="days" class="big">1</div></div>
+          <div class="pill"><div class="muted">Complexity</div><div id="cxLabel" class="big mono">-</div></div>
+          <div class="pill"><div class="muted">Multiplier</div><div id="multis" class="big mono">×1.00</div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+          <button class="btn" id="copyJson">📋 Copy as JSON</button>
+          <span id="copied" class="hint" style="display:none">Copied. Tempel aja di task/PR.</span>
+        </div>
+        <div id="advice" class="note" style="margin-top:10px">Tip akan muncul di sini…</div>
+        <div class="footer">Formula: <span class="mono">(Base + ΣModifiers) × Seniority × FightClass × (1+0.05×risk) × Env</span></div>
+      </div>
+      <div class="card span4">
+        <h2>Breakdown Poin</h2>
+        <div class="mono" id="breakdown" style="white-space:pre-wrap"></div>
+      </div>
+      <div class="card span12">
+        <div class="badge-wrap" style="justify-content:space-between;align-items:center">
+          <div class="badge-wrap">
+            <svg class="saitama" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00e5ff"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs><circle cx="50" cy="50" r="46" fill="none" stroke="url(#g)" stroke-width="6"/><circle cx="50" cy="42" r="16" fill="url(#g)" opacity=".25"/><rect x="26" y="56" width="48" height="24" rx="12" fill="url(#g)" opacity=".25"/><text x="50" y="92" text-anchor="middle" font-size="10" fill="#a78bfa" font-weight="700">SAITAMA</text></svg>
+            <div>
+              <div class="stamp neon">Saitama Approved™</div>
+              <div class="hint">Kalau total effort ≤ kapasitas sprint.</div>
+            </div>
+          </div>
+          <div>
+            <div class="row">
+              <div class="counter"><label class="lbl">Devs</label><input id="teamDevs" type="number" class="input num" min="1" value="4"></div>
+              <div class="counter"><label class="lbl">Sprint days</label><input id="sprintDays" type="number" class="input num" min="1" value="10"></div>
+              <div class="counter"><label class="lbl">Focus factor</label><input id="focusFactor" type="number" step="0.05" class="input num" min="0.3" max="1" value="0.7"></div>
+            </div>
+            <p class="hint">Capacity = devs × days × focus (default 0.7 buat meeting, bugfix, life happens)</p>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="kpi">
+          <div class="pill"><div class="muted">Total Score</div><div id="totScore" class="big">0</div></div>
+          <div class="pill"><div class="muted">Total Days</div><div id="totDays" class="big">0</div></div>
+          <div class="pill"><div class="muted">Capacity (days)</div><div id="capacity" class="big">0</div></div>
+          <div class="pill"><div class="muted">Status</div><div id="fitStatus" class="big">—</div></div>
+        </div>
+        <div class="bar" style="margin-top:10px"><span id="barFill" style="width:0%"></span></div>
+        <p id="statusMsg" class="hint" style="margin-top:6px">Tambahkan task untuk melihat status sprint.</p>
+      </div>
+      <div class="card span12">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <h2 style="margin:0">Sprint Tasks</h2>
+          <div class="row">
+            <input type="file" id="importFile" accept="application/json" style="display:none" />
+            <button class="btn" id="importJson">⬆️ Import JSON</button>
+            <button class="btn" id="exportJson">⬇️ Export JSON</button>
+            <button class="btn" id="exportCsv">⬇️ Export CSV</button>
+            <button class="btn warn" id="clearSprint">🗑️ Clear</button>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div style="overflow:auto">
+          <table id="tbl"><thead><tr><th style="width:36px">#</th><th>Task</th><th>Complexity</th><th>Score</th><th>Days</th><th>Seniority</th><th style="width:52px">Del</th></tr></thead><tbody id="tbody"><tr><td colspan="7" class="hint">Belum ada task. Hitung di atas, beri nama, lalu klik <b>Add to Sprint</b> atau <b>Load Food‑Order Samples</b>.</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="configModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="cfgTitle">
+    <div class="panel">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 id="cfgTitle" style="margin:0">Configure Modifiers & Multipliers</h2>
+        <div class="row gap">
+          <button class="btn ghost" id="configReset">↩️ Reset Default</button>
+          <button class="btn" id="configApply">✅ Apply</button>
+          <button class="btn warn" id="configClose">✖ Close</button>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <p class="hint">Edit JSON di bawah ini. Field utama: <span class="mono">base.normal</span>, <span class="mono">base.savage</span>, <span class="mono">weights</span>, <span class="mono">multipliers</span>. Disimpan ke <span class="mono">localStorage</span>.</p>
+      <textarea id="configText"></textarea>
+    </div>
+  </div>
+
+  <script>
+    let SAVAGE=false;
+
+    const DEFAULT_CONFIG={
+      base:{
+        normal:{Serigala:3,Harimau:8,Iblis:13,Naga:21,Dewa:34},
+        savage:{Serigala:2,Harimau:6,Iblis:10,Naga:16,Dewa:24}
+      },
+      weights:{
+        api:{get:2,mutate:4,complex:6},
+        db:{new:6,alter:10,crud:3},
+        redis:{none:0,simple:2,invalidation:4,lock:5},
+        type:{none:0,internal:2,cross:4,compat:6},
+        integ:{none:0,internal:4,oauth:6,payment:8,iso8583:12},
+        tests:{unit:2,integ:4,contract:3},
+        obs:{logging:1,metrics:2,tracing:3},
+        nfr:{perf:5,security:5,compliance:5}
+      },
+      multipliers:{
+        seniority:{S:1.15,SS:1.00,SSS:0.90},
+        fight:{prof:0.85,amatir:1.00,newbie:1.20,bulu:1.35},
+        env:{dev:1.00,stg:1.10,prod:1.25}
+      }
+    };
+
+    let CONFIG;try{CONFIG=JSON.parse(localStorage.getItem('onepunch_config')||'null')||DEFAULT_CONFIG}catch{CONFIG=DEFAULT_CONFIG}
+
+    let seniorityMul={...CONFIG.multipliers.seniority};
+    let fightMul={...CONFIG.multipliers.fight};
+    let envMul={...CONFIG.multipliers.env};
+
+    const complexityOptions=[{k:"Serigala",emoji:"🐺"},{k:"Harimau",emoji:"🐯"},{k:"Iblis",emoji:"😈"},{k:"Naga",emoji:"🐉"},{k:"Dewa",emoji:"🛐"}];
+    function baseFor(k){return(SAVAGE?CONFIG.base.savage[k]:CONFIG.base.normal[k]);}
+    const complexityMeta={Serigala:{title:"Serigala",lines:["Cocok: bug minor, copy/label change, small refactor.","Contoh: rename field, tambah log sederhana, adjust UI tanpa DB.","Catatan: 1 dev, 0–1 hari fokus."]},Harimau:{title:"Harimau",lines:["Cocok: CRUD kecil, 1 internal API, 1 migration ringan.","Contoh: add endpoint POST + GET, 1 tabel baru tanpa backfill.","Catatan: 1 dev, 2–3 hari fokus."]},Iblis:{title:"Iblis",lines:["Cocok: multi module, alter+backfill, webhook/OAuth.","Contoh: contract test + tracing, retry & idempotency dasar.","Catatan: 1–2 dev, 3–5 hari fokus."]},Naga:{title:"Naga",lines:["Cocok: cross‑service schema, payment flow, strong idempotency.","Contoh: multi env, feature flag, rollback plan, perf target.","Catatan: 2–3 dev, 5–9 hari fokus."]},Dewa:{title:"Dewa",lines:["Cocok: high‑risk banking/ISO8583, prod‑critical path.","Contoh: TLE/HTLE, kill‑switch, SLO/SLI ketat, compliance.","Catatan: squad fokus, pecah menjadi beberapa arc + POC."]}};
+    const $=s=>document.querySelector(s);
+    const $$=s=>Array.from(document.querySelectorAll(s));
+
+    const cxWrap=$('#complexity');
+    let currentCx='Harimau';
+    function updateCxHint(){const meta=complexityMeta[currentCx];if(!meta)return;const title=`${currentCx} — base ${baseFor(currentCx)}`;const lines=[title,'—',...(meta.lines||[])];$('#cxHint').textContent=lines.join('\n');}
+    function renderCx(){cxWrap.innerHTML='';complexityOptions.forEach(opt=>{const el=document.createElement('div');el.className='chip';el.textContent=`${opt.emoji} ${opt.k} (${baseFor(opt.k)})`;el.dataset.value=opt.k;el.dataset.active=(opt.k===currentCx);el.title=`${opt.k} — base ${baseFor(opt.k)}`;el.addEventListener('click',()=>{currentCx=opt.k;renderCx();calc();updateCxHint()});cxWrap.appendChild(el)});}
+
+    const copy={normal:{title:'Satu Sprint, Seribu Drama',sub:'Hai kalian developer developer lemah klo pas ngitung effort — santai, kalkulator ini jadi sparring partner kalian. Hitung effort per task, masukin ke daftar sprint, terus cek kapasitas: kalau pas, Saitama Approved™; kalau jebol, ya… Genos Overheat.'},savage:{title:'Satu Sprint, Seribu Alibi (Savage Mode)',sub:'Hai kalian developer developer lemah klo pas ngitung effort — santai, kalkulator ini jadi sparring partner kalian. Hitung effort per task, masukin ke daftar sprint, terus cek kapasitas: kalau pas, Saitama Approved™; kalau jebol, ya… Genos Overheat.<span style="display:none"> ritual meeting </span>'}};
+    function applySavageUI(){document.body.classList.toggle('savage',SAVAGE);$('#toggleSavage').textContent=SAVAGE?'🗡️ Savage Mode: On':'🗡️ Savage Mode: Off';$('#mainTitle').innerHTML=SAVAGE?copy.savage.title:copy.normal.title;$('#subCopy').innerHTML=SAVAGE?copy.savage.sub:copy.normal.sub;renderCx();calc();updateTotals();}
+
+    const inputs={apiGet:$('#apiGet'),apiMutate:$('#apiMutate'),apiComplex:$('#apiComplex'),dbNew:$('#dbNew'),dbAlter:$('#dbAlter'),crudSimple:$('#crudSimple'),redis:$('#redis'),typeInteg:$('#typeInteg'),apiInteg:$('#apiInteg'),unitTests:$('#unitTests'),integTests:$('#integTests'),contractTests:$('#contractTests'),logging:$('#logging'),metrics:$('#metrics'),tracing:$('#tracing'),perf:$('#perf'),security:$('#security'),compliance:$('#compliance'),riskFlags:$('#riskFlags'),environment:$('#environment'),seniority:$('#seniority'),fightClass:$('#fightClass')};
+    Object.values(inputs).forEach(i=>i.addEventListener('input',calc));
+    $$('#complexity .chip').forEach(c=>c.addEventListener('click',calc));
+    function int(v){const n=parseInt(v,10);return isNaN(n)?0:n}
+    function points(){const base=baseFor(currentCx);const w=CONFIG.weights;const apiPts=w.api.get*int(inputs.apiGet.value)+w.api.mutate*int(inputs.apiMutate.value)+w.api.complex*int(inputs.apiComplex.value);const dbPts=w.db.new*int(inputs.dbNew.value)+w.db.alter*int(inputs.dbAlter.value)+w.db.crud*int(inputs.crudSimple.value);const redisPts=w.redis[inputs.redis.value];const typePts=w.type[inputs.typeInteg.value];const integPts=w.integ[inputs.apiInteg.value];const testPts=w.tests.unit*int(inputs.unitTests.value)+w.tests.integ*int(inputs.integTests.value)+w.tests.contract*int(inputs.contractTests.value);let obsPts=0;if(inputs.logging.checked)obsPts+=w.obs.logging;if(inputs.metrics.checked)obsPts+=w.obs.metrics;if(inputs.tracing.checked)obsPts+=w.obs.tracing;let nfrPts=0;if(inputs.perf.checked)nfrPts+=w.nfr.perf;if(inputs.security.checked)nfrPts+=w.nfr.security;if(inputs.compliance.checked)nfrPts+=w.nfr.compliance;const mods=apiPts+dbPts+redisPts+typePts+integPts+testPts+obsPts+nfrPts;return{base,apiPts,dbPts,redisPts,typePts,integPts,testPts,obsPts,nfrPts,mods}}
+    function calc(){const p=points();const sMul=seniorityMul[inputs.seniority.value];const fMul=fightMul[inputs.fightClass.value];const rMul=1+0.05*Math.max(0,int(inputs.riskFlags.value));const eMul=envMul[inputs.environment.value];const raw=(p.base+p.mods)*sMul*fMul*rMul*eMul;const score=Math.round(raw);const days=Math.max(1,Math.ceil(score/8));$('#score').textContent=score;$('#days').textContent=days;$('#cxLabel').textContent=currentCx;$('#multis').textContent=`×${(sMul*fMul*rMul*eMul).toFixed(2)}`;const lines=[`Base(${currentCx}) = ${p.base}`,`API = ${CONFIG.weights.api.get}*GET + ${CONFIG.weights.api.mutate}*Mutate + ${CONFIG.weights.api.complex}*Complex = ${p.apiPts}`,`DB  = ${CONFIG.weights.db.new}*New + ${CONFIG.weights.db.alter}*Alter + ${CONFIG.weights.db.crud}*CRUD = ${p.dbPts}`,`Redis = ${p.redisPts}, Type = ${p.typePts}, API‑Integ = ${p.integPts}`,`Tests = ${p.testPts}, Obs = ${p.obsPts}, NFR = ${p.nfrPts}`,`ΣModifiers = ${p.mods}`,`Multipliers: seniority×fight×risk×env = ${(sMul).toFixed(2)} × ${(fMul).toFixed(2)} × ${(rMul).toFixed(2)} × ${(eMul).toFixed(2)}`];$('#breakdown').textContent=lines.join('\n');let tip='';if(score>55)tip+='🧩 Skor >55 ⇒ pecah jadi beberapa arc. ';if(currentCx==='Dewa')tip+='🛐 Level Dewa terdeteksi ⇒ siapin spike/POC, kill‑switch, dan Prof.X.Nat.\n';if(inputs.environment.value==='prod')tip+='🚦 Production ⇒ siapkan rollback plan & SLO.\n';if(p.testPts===0)tip+='🧪 Belum ada test ⇒ minimal Unit+Integration ya.\n';if(!tip)tip='Semua aman. Jangan lupa kopi ☕ & standup < 10 menit.';$('#advice').textContent=tip;window._lastState=dumpJSON(score,days)}
+
+    function dumpJSON(score,days){return{task:$('#taskName').value||'Task Tanpa Nama',complexity:currentCx,inputs:{apiGet:int(inputs.apiGet.value),apiMutate:int(inputs.apiMutate.value),apiComplex:int(inputs.apiComplex.value),dbNew:int(inputs.dbNew.value),dbAlter:int(inputs.dbAlter.value),crudSimple:int(inputs.crudSimple.value),redis:inputs.redis.value,typeInteg:inputs.typeInteg.value,apiInteg:inputs.apiInteg.value,unitTests:int(inputs.unitTests.value),integTests:int(inputs.integTests.value),contractTests:int(inputs.contractTests.value),logging:inputs.logging.checked,metrics:inputs.metrics.checked,tracing:inputs.tracing.checked,perf:inputs.perf.checked,security:inputs.security.checked,compliance:inputs.compliance.checked,riskFlags:int(inputs.riskFlags.value),environment:inputs.environment.value,seniority:inputs.seniority.value,fightClass:inputs.fightClass.value},result:{score,days}}}
+    $('#copyJson').addEventListener('click',()=>{const data=JSON.stringify(window._lastState||dumpJSON(0,1),null,2);navigator.clipboard.writeText(data).then(()=>{$('#copied').style.display='inline';setTimeout(()=>$('#copied').style.display='none',1200)})});
+
+    function applyPreset(obj){currentCx=obj.cx||currentCx;Object.entries(obj.v||{}).forEach(([k,v])=>{if(inputs[k] instanceof HTMLInputElement&&inputs[k].type==='checkbox'){inputs[k].checked=!!v}else if(inputs[k]){inputs[k].value=v}});renderCx();calc();updateCxHint()}
+    $('#presetCrud').addEventListener('click',()=>applyPreset({cx:'Harimau',v:{apiGet:1,apiMutate:1,apiComplex:1,dbNew:1,dbAlter:0,crudSimple:1,redis:'none',typeInteg:'internal',apiInteg:'internal',unitTests:1,integTests:1,contractTests:0,logging:true,metrics:true,tracing:false,perf:false,security:true,compliance:false,riskFlags:1,environment:'stg',seniority:'SS',fightClass:'prof'}}));
+    $('#presetISO').addEventListener('click',()=>applyPreset({cx:'Naga',v:{apiGet:0,apiMutate:1,apiComplex:1,dbNew:0,dbAlter:1,crudSimple:0,redis:'lock',typeInteg:'compat',apiInteg:'iso8583',unitTests:1,integTests:2,contractTests:1,logging:true,metrics:true,tracing:true,perf:true,security:true,compliance:true,riskFlags:3,environment:'prod',seniority:'SSS',fightClass:'amatir'}}));
+    $('#presetWallet').addEventListener('click',()=>applyPreset({cx:'Iblis',v:{apiGet:1,apiMutate:1,apiComplex:1,dbNew:0,dbAlter:0,crudSimple:0,redis:'none',typeInteg:'cross',apiInteg:'oauth',unitTests:1,integTests:1,contractTests:1,logging:true,metrics:true,tracing:false,perf:false,security:true,compliance:false,riskFlags:2,environment:'stg',seniority:'SS',fightClass:'bulu'}}));
+    $('#resetBtn').addEventListener('click',()=>{currentCx='Harimau';Object.entries(inputs).forEach(([k,el])=>{if(el.type==='checkbox'){el.checked=false;return}if(el.tagName==='SELECT'){if(k==='seniority')el.value='SS';else if(k==='fightClass')el.value='amatir';else if(k==='environment')el.value='dev';else el.value='none'}else{el.value=0}});$('#taskName').value='';renderCx();calc();updateCxHint()});
+
+    let sprint=[];const tbody=$('#tbody');
+    function renderSprint(){if(sprint.length===0){tbody.innerHTML='<tr><td colspan="7" class="hint">Belum ada task. Hitung di atas, beri nama, lalu klik <b>Add to Sprint</b> atau <b>Load Food‑Order Samples</b>.</td></tr>';updateTotals();return}tbody.innerHTML='';sprint.forEach((t,idx)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${idx+1}</td><td>${escapeHtml(t.task)}</td><td>${t.complexity}</td><td>${t.score}</td><td>${t.days}</td><td class="owner">${t.owner||''}</td><td class="rm" title="Remove" data-id="${t.id}">✖</td>`;tbody.appendChild(tr)});$$('#tbody .rm').forEach(el=>el.addEventListener('click',e=>{const id=e.currentTarget.getAttribute('data-id');sprint=sprint.filter(x=>x.id!==id);renderSprint()}));updateTotals()}
+    function updateTotals(){const totScore=sprint.reduce((a,b)=>a+b.score,0);const totDays=sprint.reduce((a,b)=>a+b.days,0);$('#totScore').textContent=totScore;$('#totDays').textContent=totDays;const devs=Math.max(1,int($('#teamDevs').value));const days=Math.max(1,int($('#sprintDays').value));const focus=Math.max(0.3,Math.min(1,parseFloat($('#focusFactor').value)||0.7));const capacity=Math.round(devs*days*focus);$('#capacity').textContent=capacity;const ratio=capacity===0?0:Math.min(1,totDays/capacity);$('#barFill').style.width=Math.max(2,Math.floor(ratio*100))+'%';const status=totDays<=capacity?'✅ Saitama Approved':'Genos Overheat';$('#fitStatus').textContent=status;const over=totDays-capacity;$('#statusMsg').textContent=totDays<=capacity?(SAVAGE?'Oke. Realistis. Jangan manis di retro.':'Mantap. Sprint realistic. Gaskeun!'):(SAVAGE?`Kelebihan ${over} hari fokus. Pangkas scope atau tambah dev — bukan tambah meeting.`:`Kelebihan ${over} hari fokus. Kurangi scope atau tambah dev.`)}
+    ;['teamDevs','sprintDays','focusFactor'].forEach(id=>$('#'+id).addEventListener('input',updateTotals));
+    function escapeHtml(str){return(str||'').replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]))}
+
+    $('#addTask').addEventListener('click',()=>{calc();const st=window._lastState||dumpJSON(0,1);const name=($('#taskName').value||'Task Tanpa Nama').trim();const id=Math.random().toString(36).slice(2,9);sprint.push({id,task:name,complexity:st.complexity,score:st.result.score,days:st.result.days,owner:inputs.seniority.value});renderSprint();$('#taskName').value=''})
+    $('#clearSprint').addEventListener('click',()=>{sprint=[];renderSprint()});
+    function download(name,content){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:'text/plain'}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
+    $('#exportJson').addEventListener('click',()=>{const devs=int($('#teamDevs').value),days=int($('#sprintDays').value),focus=parseFloat($('#focusFactor').value)||0.7;const payload={meta:{devs,sprintDays:days,focus,savage:SAVAGE,theme:document.body.classList.contains('light')?'light':'dark'},tasks:sprint,totals:{score:sprint.reduce((a,b)=>a+b.score,0),days:sprint.reduce((a,b)=>a+b.days,0)}};download('onepunch-sprint.json',JSON.stringify(payload,null,2))});
+    $('#exportCsv').addEventListener('click',()=>{if(sprint.length===0){download('onepunch-sprint.csv','No tasks');return}const rows=[["#","Task","Complexity","Score","Days","Seniority","Savage","Theme"]].concat(sprint.map((t,i)=>[i+1,t.task,t.complexity,t.score,t.days,(t.owner||''),SAVAGE?'On':'Off',document.body.classList.contains('light')?'Light':'Dark'])).map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));download('onepunch-sprint.csv',rows.join('\n'))});
+
+    const baseFoodSamples=[
+      {name:'Fix null‑check on /v1/menu/search (empty query)',cx:'Serigala',v:{apiGet:1,apiMutate:0,apiComplex:0,dbNew:0,dbAlter:0,crudSimple:0,redis:'none',typeInteg:'none',apiInteg:'internal',unitTests:1,integTests:0,contractTests:0,logging:true,metrics:false,tracing:false,perf:false,security:false,compliance:false,riskFlags:0,environment:'dev',seniority:'SS',fightClass:'prof'}},
+      {name:'CRUD Endpoint: /v1/menu/favorite',cx:'Harimau',v:{apiGet:1,apiMutate:1,apiComplex:0,dbNew:1,dbAlter:0,crudSimple:1,redis:'simple',typeInteg:'internal',apiInteg:'internal',unitTests:1,integTests:1,contractTests:0,logging:true,metrics:true,tracing:false,perf:false,security:true,compliance:false,riskFlags:1,environment:'stg',seniority:'SS',fightClass:'amatir'}},
+      {name:'Order Checkout API (connect Cart, Menu, Payment)',cx:'Iblis',v:{apiGet:1,apiMutate:2,apiComplex:1,dbNew:1,dbAlter:1,crudSimple:0,redis:'lock',typeInteg:'cross',apiInteg:'payment',unitTests:2,integTests:2,contractTests:1,logging:true,metrics:true,tracing:true,perf:true,security:true,compliance:false,riskFlags:2,environment:'stg',seniority:'SS',fightClass:'amatir'}},
+      {name:'Implement loyalty point accrual in /v1/payment/complete',cx:'Naga',v:{apiGet:1,apiMutate:1,apiComplex:1,dbNew:1,dbAlter:1,crudSimple:0,redis:'invalidation',typeInteg:'cross',apiInteg:'payment',unitTests:2,integTests:2,contractTests:1,logging:true,metrics:true,tracing:true,perf:true,security:true,compliance:true,riskFlags:3,environment:'prod',seniority:'SS',fightClass:'amatir'}},
+      {name:'Integrate payment gateway (ISO8583) for KFC Pay',cx:'Dewa',v:{apiGet:1,apiMutate:2,apiComplex:2,dbNew:1,dbAlter:1,crudSimple:0,redis:'lock',typeInteg:'compat',apiInteg:'iso8583',unitTests:2,integTests:3,contractTests:2,logging:true,metrics:true,tracing:true,perf:true,security:true,compliance:true,riskFlags:4,environment:'prod',seniority:'SS',fightClass:'amatir'}}
+    ];
+    function makeFoodOrderSamples(){const ranks=['S','SS','SSS'];const out=[];ranks.forEach(rank=>{baseFoodSamples.forEach(b=>{const t=JSON.parse(JSON.stringify(b));t.name=`${b.name} [${rank}]`;t.v.seniority=rank;out.push(t)})});return out}
+    const foodOrderSamples=makeFoodOrderSamples();
+    function snapshotInputs(){return{cx:currentCx,values:Object.fromEntries(Object.entries(inputs).map(([k,el])=>[k,el.type==='checkbox'?el.checked:el.value]))}}
+    function restoreInputs(snap){currentCx=snap.cx;Object.entries(snap.values).forEach(([k,v])=>{const el=inputs[k];if(!el)return;if(el.type==='checkbox')el.checked=!!v;else el.value=v});renderCx();calc();updateCxHint()}
+    function addSampleTasks(){const snap=snapshotInputs();foodOrderSamples.forEach(t=>{if(sprint.some(x=>x.task===t.name))return;applyPreset({cx:t.cx,v:t.v});const st=window._lastState||dumpJSON(0,1);const id=Math.random().toString(36).slice(2,9);sprint.push({id,task:t.name,complexity:t.cx,score:st.result.score,days:st.result.days,owner:t.v.seniority||'SS'});});restoreInputs(snap);renderSprint()}
+    $('#loadSamples').addEventListener('click',addSampleTasks);
+
+    function applyTheme(theme){const isLight=theme==='light';document.body.classList.toggle('light',isLight);$('#toggleTheme').textContent=isLight?'Neon Mode: Light':'Neon Mode: Dark'}
+
+    function importPayload(obj){try{if(Array.isArray(obj)){sprint=obj}else if(obj&&typeof obj==='object'){if(Array.isArray(obj.tasks))sprint=obj.tasks;const m=obj.meta||{};if(typeof m.devs==='number')$('#teamDevs').value=String(m.devs);if(typeof m.sprintDays==='number')$('#sprintDays').value=String(m.sprintDays);if(typeof m.focus==='number')$('#focusFactor').value=String(m.focus);if(typeof m.savage==='boolean'){SAVAGE=m.savage;applySavageUI()}if(m.theme==='light'||m.theme==='dark')applyTheme(m.theme)}else{alert('Format JSON tidak dikenali');return}sprint=sprint.map((t,i)=>({id:t.id||Math.random().toString(36).slice(2,9),task:String(t.task||`Task ${i+1}`),complexity:String(t.complexity||'-'),score:Math.max(0,parseInt(t.score||0,10)),days:Math.max(1,parseInt(t.days||1,10)),owner:t.owner||''}));renderSprint()}catch(e){alert('Gagal import JSON: '+e.message)}}
+    $('#importJson').addEventListener('click',()=>$('#importFile').click());
+    $('#importFile').addEventListener('change',async(e)=>{const f=e.target.files&&e.target.files[0];if(!f)return;const text=await f.text();let obj;try{obj=JSON.parse(text)}catch(err){alert('File bukan JSON valid');return}importPayload(obj);e.target.value=''});
+
+    function computeScore(base,mods,seniorityKey,fightKey,riskFlags,envKey){const sMul=seniorityMul[seniorityKey];const fMul=fightMul[fightKey];const rMul=1+0.05*Math.max(0,riskFlags);const eMul=envMul[envKey];const raw=(base+mods)*sMul*fMul*rMul*eMul;const score=Math.round(raw);const days=Math.max(1,Math.ceil(score/8));return{score,days}}
+    function printTrademarkBanner(){const brand="BABITAMPAN AND FREN'S";window.__BRAND=brand;const style1='background:linear-gradient(90deg,#00e5ff,#7c3aed); color:white; font-weight:800; padding:6px 10px; border-radius:6px 0 0 6px';const style2='background:#0b1220; color:#a78bfa; font-weight:700; padding:6px 10px; border-radius:0 6px 6px 0; border:1px solid #243147; border-left:none';console.log('%c '+brand+' %c™',style1,style2);console.log('%cMade with ❤️ — One‑Punch Effort Calc','color:#9fb3d8')}
+    function runSelfTests(){const tests=[];const t=(name,cond)=>tests.push({name,pass:!!cond});const a=computeScore(8,25,'SS','prof',1,'stg');t('CRUD example score=32',a.score===32);t('CRUD example days=4',a.days===4);const b=computeScore(21,23,'SSS','amatir',3,'prod');t('ISO8583 example score=57',b.score===57);t('ISO8583 example days=8',b.days===8);const c1=computeScore(13,16,'SS','bulu',0,'stg').score;const c2=computeScore(13,16,'SS','bulu',2,'stg').score;t('Risk increases score',c2>c1);t('Newline escape works','a\nb'.split('\n').length===2);t('Trademark set',window.__BRAND==="BABITAMPAN AND FREN'S");const f=computeScore(0,0,'SSS','prof',0,'dev');t('Days lower bound = 1',f.days===1);const g1=computeScore(10,0,'SSS','amatir',0,'dev').score;const g2=computeScore(10,0,'S','amatir',0,'dev').score;t('S > SSS (same inputs)',g2>g1);const cap=Math.round(3*10*0.7);t('Capacity rounding spec',cap===21);const prev=currentCx;currentCx='Dewa';updateCxHint();const ok=$('#cxHint').textContent.includes('Dewa');currentCx=prev;updateCxHint();t('cxHint updates with selection',ok);const prevSav=SAVAGE;SAVAGE=true;applySavageUI();const j1=document.body.classList.contains('savage');const j2=$('#mainTitle').textContent.includes('Savage Mode');const j3=$('#subCopy').textContent.includes('Genos Overheat');SAVAGE=prevSav;applySavageUI();t('Savage class toggled',j1);t('Savage title updates',j2);t('Savage copy updated',j3);const prevSec=inputs.security.checked;inputs.security.checked=false;const k0=points().nfrPts;inputs.security.checked=true;const k1=points().nfrPts;inputs.security.checked=prevSec;calc();t('Security adds +5',(k1-k0)===CONFIG.weights.nfr.security);const wasLight=document.body.classList.contains('light');document.body.classList.toggle('light');const themeFlipped=document.body.classList.contains('light')!==wasLight;document.body.classList.toggle('light');t('Theme toggles',themeFlipped);t('Samples length = 15',Array.isArray(foodOrderSamples)&&foodOrderSamples.length===15);const ranks=new Set(foodOrderSamples.map(s=>s.v.seniority));t('Samples include S',ranks.has('S'));t('Samples include SS',ranks.has('SS'));t('Samples include SSS',ranks.has('SSS'));const prevSen=inputs.seniority.value;inputs.seniority.value='S';calc();const st=dumpJSON(0,1);const expected=inputs.seniority.value;const example={id:'x',task:'T',complexity:st.complexity,score:st.result.score,days:st.result.days,owner:inputs.seniority.value};t('Owner equals current seniority',example.owner===expected);inputs.seniority.value=prevSen;calc();const failed=tests.filter(x=>!x.pass);const el=document.createElement('div');el.style.cssText='margin:10px 0;font-size:12px;color:#9fb3d8';el.innerHTML=failed.length?`🧪 Self‑tests: <span style=\"color:#fb7185\">${failed.length} failed</span> / ${tests.length}. Lihat console untuk detail.`:`🧪 Self‑tests: <span style=\"color:#34d399\">All passed</span> (${tests.length}).`;document.body.appendChild(el);console.group('One‑Punch Effort — Self Tests');tests.forEach(x=>console[x.pass?'log':'error'](`${x.pass?'PASS':'FAIL'} — ${x.name}`));console.groupEnd()}
+
+    function openConfig(){const ta=$('#configText');ta.value=JSON.stringify(CONFIG,null,2);$('#configModal').classList.add('show')}
+    function closeConfig(){$('#configModal').classList.remove('show')}
+    function syncFromConfig(){seniorityMul={...CONFIG.multipliers.seniority};fightMul={...CONFIG.multipliers.fight};envMul={...CONFIG.multipliers.env}}
+    function applyConfig(){let obj;try{obj=JSON.parse($('#configText').value)}catch(e){alert('JSON tidak valid: '+e.message);return}const need=['base','weights','multipliers'];if(!need.every(k=>obj&&typeof obj==='object'&&k in obj)){alert('Field wajib hilang: base/weights/multipliers');return}CONFIG=obj;localStorage.setItem('onepunch_config',JSON.stringify(CONFIG));syncFromConfig();renderCx();calc();updateTotals();updateCxHint();closeConfig()}
+    function resetConfig(){CONFIG=DEFAULT_CONFIG;localStorage.setItem('onepunch_config',JSON.stringify(CONFIG));syncFromConfig();$('#configText').value=JSON.stringify(CONFIG,null,2)}
+
+    function boot(){printTrademarkBanner();renderCx();updateCxHint();renderSprint();calc();applySavageUI();runSelfTests();}
+
+    $('#toggleSavage').addEventListener('click',()=>{SAVAGE=!SAVAGE;applySavageUI()});
+    $('#toggleTheme').addEventListener('click',()=>{const nowLight=!document.body.classList.contains('light');applyTheme(nowLight?'light':'dark')});
+    $('#configBtn').addEventListener('click',openConfig);
+    $('#configClose').addEventListener('click',closeConfig);
+    $('#configApply').addEventListener('click',applyConfig);
+    $('#configReset').addEventListener('click',resetConfig);
+
+    boot();
+  </script>
+</body>
+</html>
