@@ -80,3 +80,19 @@ function resetConfig(){CONFIG=DEFAULT_CONFIG;localStorage.setItem('onepunch_conf
 function boot(){printTrademarkBanner();cxWrap=$('#complexity');inputs={apiGet:$('#apiGet'),apiMutate:$('#apiMutate'),apiComplex:$('#apiComplex'),dbNew:$('#dbNew'),dbAlter:$('#dbAlter'),crudSimple:$('#crudSimple'),redis:$('#redis'),typeInteg:$('#typeInteg'),apiInteg:$('#apiInteg'),unitTests:$('#unitTests'),integTests:$('#integTests'),contractTests:$('#contractTests'),logging:$('#logging'),metrics:$('#metrics'),tracing:$('#tracing'),perf:$('#perf'),security:$('#security'),compliance:$('#compliance'),riskFlags:$('#riskFlags'),environment:$('#environment'),seniority:$('#seniority'),fightClass:$('#fightClass')};Object.values(inputs).forEach(i=>i.addEventListener('input',calc));tbody=$('#tbody');renderCx();updateCxHint();renderSprint();calc();applySavageUI();if(window.ENABLE_SELFTEST)runSelfTests();$('#toggleSavage').addEventListener('click',()=>{SAVAGE=!SAVAGE;applySavageUI()});$('#toggleTheme').addEventListener('click',()=>{const nowLight=!document.body.classList.contains('light');applyTheme(nowLight?'light':'dark')});$('#copyJson').addEventListener('click',copyJson);$('#addTask').addEventListener('click',addTask);$('#clearSprint').addEventListener('click',clearSprint);['teamDevs','sprintDays','focusFactor'].forEach(id=>$('#'+id).addEventListener('input',updateTotals));$('#presetCrud').addEventListener('click',presetCrud);$('#presetISO').addEventListener('click',presetISO);$('#presetWallet').addEventListener('click',presetWallet);$('#resetBtn').addEventListener('click',resetForm);$('#exportJson').addEventListener('click',exportJson);$('#exportCsv').addEventListener('click',exportCsv);$('#loadSamples').addEventListener('click',addSampleTasks);$('#importJson').addEventListener('click',()=>$('#importFile').click());$('#importFile').addEventListener('change',async(e)=>{const f=e.target.files&&e.target.files[0];if(!f)return;const text=await f.text();let obj;try{obj=JSON.parse(text)}catch(err){alert('File bukan JSON valid');return}importPayload(obj);e.target.value=''});$('#configBtn').addEventListener('click',openConfig);$('#configClose').addEventListener('click',closeConfig);$('#configApply').addEventListener('click',applyConfig);$('#configReset').addEventListener('click',resetConfig);if($('#metricSel'))$('#metricSel').addEventListener('change',()=>{renderPie();renderSegmentList()});if($('#segClear'))$('#segClear').addEventListener('click',()=>{_pieSel=null;renderPie();renderSegmentList()})}
 
 document.addEventListener('DOMContentLoaded',()=>{boot();renderPie()});
+
+// setelah gambar semua slice…
+const big = document.createElementNS('http://www.w3.org/2000/svg','text');
+big.setAttribute('x', cx);
+big.setAttribute('y', cy);
+big.setAttribute('class', 'centerLabel');
+big.setAttribute('font-size', '18');
+big.textContent = total + ' ' + (metric === 'days' ? 'days' : 'score');
+svg.appendChild(big);
+
+const small = document.createElementNS('http://www.w3.org/2000/svg','text');
+small.setAttribute('x', cx);
+small.setAttribute('y', cy + 18);
+small.setAttribute('class', 'centerLabel');
+small.textContent = 'by Complexity';
+svg.appendChild(small);

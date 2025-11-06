@@ -44,3 +44,10 @@ table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid #172039;
 .legend .rowItem{cursor:pointer; padding:4px 6px; border-radius:8px}
 .legend .rowItem[data-active="true"]{outline:1px solid var(--ring); background:#0b1220}
 body.light .legend .rowItem[data-active="true"]{background:#eef2ff}
+
+.centerLabel{
+  fill: var(--text);
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
