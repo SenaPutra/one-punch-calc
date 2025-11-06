@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>One‑Punch Effort Calculator — Neon</title>
+  <title>One-Punch Effort Calculator — Neon</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
     <div class="title">
-      <span class="badge">🧮 One‑Punch Effort Calculator</span>
+      <span class="badge">🧮 One-Punch Effort Calculator</span>
+      <span class="tag">Serigala → Dewa</span>
       <button class="tag" id="toggleTheme" title="Toggle Dark/Light">Neon Mode: Dark</button>
+      <span class="tag">Saitama Approved™</span>
       <button class="btn ghost" id="toggleSavage">🗡️ Savage Mode: Off</button>
       <button class="btn" id="configBtn">🛠️ Config</button>
     </div>
@@ -30,7 +32,7 @@
         <div id="cxHint" class="note mono" style="white-space:pre-wrap; margin-top:8px">
 Pilih tingkat kompleksitas untuk melihat detail & contoh.
 —
-Serigala: bug/minor change • Harimau: CRUD kecil • Iblis: multi module • Naga: cross‑service/payment • Dewa: misi planet Namek.
+Serigala: bug/minor change • Harimau: CRUD kecil • Iblis: multi-module • Naga: cross-service/payment • Dewa: misi planet Namek.
         </div>
         <div class="divider"></div>
 
@@ -91,7 +93,7 @@ Serigala: bug/minor change • Harimau: CRUD kecil • Iblis: multi module • N
           <label><input id="tracing" type="checkbox"> Tracing</label>
         </div>
         <div class="row" style="margin-top:8px">
-          <label class="lbl">Non‑Functional</label>
+          <label class="lbl">Non-Functional</label>
           <label><input id="perf" type="checkbox"> Performance target</label>
           <label><input id="security" type="checkbox"> Security hardening</label>
           <label><input id="compliance" type="checkbox"> Compliance</label>
@@ -129,7 +131,7 @@ Serigala: bug/minor change • Harimau: CRUD kecil • Iblis: multi module • N
           <button class="btn ghost" id="presetCrud">⚙️ Preset CRUD</button>
           <button class="btn ghost" id="presetISO">🏦 Preset ISO8583</button>
           <button class="btn ghost" id="presetWallet">🎟️ Preset Wallet</button>
-          <button class="btn ghost" id="loadSamples">🍗 Load Food‑Order Samples</button>
+          <button class="btn ghost" id="loadSamples">🍗 Load Food-Order Samples</button>
           <button class="btn warn" id="resetBtn">♻️ Reset</button>
         </div>
         <p class="hint" style="margin-top:8px">Preset = contoh yang sering kita garap. Bebas custom lagi.</p>
@@ -157,11 +159,13 @@ Serigala: bug/minor change • Harimau: CRUD kecil • Iblis: multi module • N
         <div class="mono" id="breakdown" style="white-space:pre-wrap"></div>
       </div>
 
+      
       <div class="card span12">
-        <div class="badge-wrap" style="justify-content:space-between;align-items:center">
+        <div class="badge-wrap" style="justify-content:space-between; align-items:center">
           <div class="badge-wrap">
             <svg class="saitama" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00e5ff"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs>
+              <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#00e5ff"/><stop offset="100%" stop-color="#7c3aed"/></linearGradient></defs>
               <circle cx="50" cy="50" r="46" fill="none" stroke="url(#g)" stroke-width="6"/>
               <circle cx="50" cy="42" r="16" fill="url(#g)" opacity=".25"/>
               <rect x="26" y="56" width="48" height="24" rx="12" fill="url(#g)" opacity=".25"/>
@@ -194,6 +198,37 @@ Serigala: bug/minor change • Harimau: CRUD kecil • Iblis: multi module • N
 
       <div class="card span12">
         <div class="row" style="justify-content:space-between;align-items:center">
+          <h2 style="margin:0">Dashboard — Effort Mix</h2>
+          <div class="row">
+            <label class="lbl">Metric</label>
+            <select id="metricSel">
+              <option value="days" selected>Days</option>
+              <option value="score">Score</option>
+            </select>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="row dashboard">
+          <svg id="pieChart" viewBox="0 0 220 220" class="donut" aria-label="Effort Pie"></svg>
+          <div id="pieLegend" class="mono"></div>
+        </div>
+      </div>
+
+      <div class="card span12" id="segmentCard">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <h2 style="margin:0">Segment — Tasks</h2>
+          <div class="row">
+            <span class="lbl">Selected:</span>
+            <span class="badge" id="segTitle">None</span>
+            <button class="btn ghost" id="segClear">Clear</button>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div id="segmentList" class="mono" style="white-space:pre-wrap">Klik slice/legend di pie chart buat lihat daftar task per complexity.</div>
+      </div>
+
+      <div class="card span12">
+        <div class="row" style="justify-content:space-between;align-items:center">
           <h2 style="margin:0">Sprint Tasks</h2>
           <div class="row">
             <input type="file" id="importFile" accept="application/json" style="display:none" />
@@ -206,8 +241,18 @@ Serigala: bug/minor change • Harimau: CRUD kecil • Iblis: multi module • N
         <div class="divider"></div>
         <div style="overflow:auto">
           <table id="tbl">
-            <thead><tr><th style="width:36px">#</th><th>Task</th><th>Complexity</th><th>Score</th><th>Days</th><th>Seniority</th><th style="width:52px">Del</th></tr></thead>
-            <tbody id="tbody"><tr><td colspan="7" class="hint">Belum ada task. Hitung di atas, beri nama, lalu klik <b>Add to Sprint</b> atau <b>Load Food‑Order Samples</b>.</td></tr></tbody>
+            <thead>
+              <tr>
+                <th style="width:36px">#</th>
+                <th>Task</th>
+                <th>Complexity</th>
+                <th>Score</th>
+                <th>Days</th>
+                <th>Seniority</th>
+                <th style="width:52px">Del</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"><tr><td colspan="7" class="hint">Belum ada task. Hitung di atas, beri nama, lalu klik <b>Add to Sprint</b> atau <b>Load Food-Order Samples</b>.</td></tr></tbody>
           </table>
         </div>
       </div>
