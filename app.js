@@ -7,7 +7,7 @@ let CONFIG;try{CONFIG=JSON.parse(localStorage.getItem('onepunch_config')||'null'
 let seniorityMul={...CONFIG.multipliers.seniority};let fightMul={...CONFIG.multipliers.fight};let envMul={...CONFIG.multipliers.env};
 const complexityOptions=[{k:"Serigala",emoji:"🐺"},{k:"Harimau",emoji:"🐯"},{k:"Iblis",emoji:"😈"},{k:"Naga",emoji:"🐉"},{k:"Dewa",emoji:"🛐"}];
 function baseFor(k){return (SAVAGE?CONFIG.base.savage[k]:CONFIG.base.normal[k])}
-const complexityMeta={Serigala:{title:"Serigala",lines:["Cocok: Cocok: Untuk Developer Lemah, Sedang kena gangguan Mental, bug minor, copy/label change, small refactor.","Contoh: rename field, tambah log sederhana, adjust UI tanpa DB.","Catatan: 1 dev, 0–1 hari fokus."]},
+const complexityMeta={Serigala:{title:"Serigala",lines:["Cocok: Untuk Developer Lemah, Sedang kena gangguan Mental, bug minor, copy/label change, small refactor.","Contoh: rename field, tambah log sederhana, adjust UI tanpa DB.","Catatan: 1 dev, 0–1 hari fokus."]},
 Harimau:{title:"Harimau",lines:["Cocok: Untuk Developer biasa biasa ajahhhh.","Contoh: add endpoint POST + GET, 1 tabel baru tanpa backfill.","Catatan: 1 dev, 1 hari fokus."]},
 Iblis:{title:"Iblis",lines:["Cocok: Untuk Developer sedang meniti Karir, Sang pengejar duniawi.","Catatan: 1–2 dev, 2–3 hari fokus."]},
 Naga:{title:"Naga",lines:["Cocok: Untuk Developer Jago yang Ga butuh libur.","Contoh: multi env, feature flag, rollback plan, perf target.","Catatan: 2–3 dev, 4–5 hari fokus."]},
