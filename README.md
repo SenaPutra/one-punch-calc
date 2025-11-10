@@ -124,24 +124,6 @@ Contoh berkas `onepunch-sprint.json`:
 
 ---
 
-## 🍗 Samples (Food‑Order)
-Klik **Load Food‑Order Samples**. Akan dimasukkan 15 task contoh: tiap level (Serigala→Dewa) dieksekusi oleh rank **S**, **SS**, dan **SSS**. Cocok buat ngetes perhitungan sprint tim kalian cepat‑cepat.
-
----
-
-## 🧪 Self‑Tests
-Saat halaman dibuka, self‑tests jalan otomatis. Ringkasannya muncul di bawah UI, detail ada di **Console**. Kalau ada yang fail, biasanya karena script terpotong atau config JSON invalid.
-
----
-
-## 🤝 Tips Biar Nggak Overheat
-- Checklist bikin bibir bergetar → itu **bukan** Serigala.
-- Kalau ragu antara dua level, ambil yang **lebih tinggi**. Hidupmu akan lebih damai.
-- “Fokus factor” 0.7 itu realistis. 1.0 itu *khayalan sinetron*.
-- Genos Overheat ≠ drama. Artinya: potong scope atau tambah dev, bukan tambah ritual meeting.
-
----
-
 ## 🛠️ Dev Notes
 - Semua state config disimpan di `localStorage` (`onepunch_config`).
 - Single‑file HTML, tanpa build‑step. Commit → push → host.
